@@ -18,14 +18,7 @@ from pyspark.sql.types import *
 
 # +
 # Specify the path to your CSV file
-csv_file_path = "gs://capstondata/loans_partition_1.csv"
-
-# Read the CSV file into a DataFrame with inferred schema
-df = spark.read.csv(csv_file_path, header=True, inferSchema=True)
-
-# Show the contents of the DataFrame
-df.show()
-# -
+df=dfs["loans"]
 
 #REMOVE DUPLICATES and remove nulls
 df=df.dropDuplicates()
@@ -77,7 +70,7 @@ df= df.na.fill(0, subset=["Monthly Debt"])
 
 # +
 # Specify the desired file name and path
-desired_file_name = "gs://capstondata/silver_layer/loans.csv"
+desired_file_name = "gs://silver-layer-capstone/loans/"
 
 # Write the cleaned DataFrame to a CSV file with the desired file name
 df.write.csv(desired_file_name, header=True, mode="append")
