@@ -12,20 +12,7 @@
 #     name: pyspark
 # ---
 
-# +
-from pyspark.sql import SparkSession
 
-# Create a Spark session
-spark = SparkSession.builder \
-        .getOrCreate()
-
-# Read data from a CSV file
-file_path = "branches.csv"
-df = spark.read.csv(file_path, header=True, inferSchema=True)
-df.show()
-# -
-
-df.dtypes
 
 # +
 from pyspark.sql.types import StructType, StructField, StringType, TimestampType, DoubleType
@@ -36,7 +23,7 @@ schema = StructType([
     StructField("Bank_city", StringType(), True)
    
 ])
-df = spark.read.csv(file_path, header=True, schema=schema)
+df=dfs["transactions"]
 
 # Show the DataFrame
 df.show()
@@ -51,7 +38,7 @@ df_transformed = df_transformed.withColumn("Bank_city", upper(trim(col("Bank_cit
 df_transformed.show()
 
 # +
-desired_file_name = "gs://capstondata/silver_layer/transaction.csv"
+desired_file_name = "gs://silver-layer-capstone/transactions/"
  
 # Write the cleaned DataFrame to a CSV file with the desired file name
 df_transformed.write.csv(desired_file_name, header=True, mode="append")
