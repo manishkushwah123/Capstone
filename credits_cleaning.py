@@ -15,9 +15,7 @@
 # +
 import pyspark
 from pyspark.sql.functions import *
-# Read JSON file into a DataFrame
-credits_file_path = "gs://inputbucket01/credit.json"  # Replace with your JSON file path
-credits_csv = spark.read.json(credits_file_path)
+credits_csv=dfs["credits"]
 
 
 
@@ -76,5 +74,5 @@ credits_csv=credits_csv.na.fill(0,subset=["Years of Credit History",
 
 credits_csv.show(2,truncate=False)
 
-desired_file_path="gs://capstondata/silver_layer/credits.csv"
+desired_file_path="gs://silver_layer-capstone/credits/"
 credits_csv.write.csv(desired_file_path,header=True,mode="append")
