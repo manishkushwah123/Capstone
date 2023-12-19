@@ -5,11 +5,11 @@ This POC follows Medallion Architecture and assumes 'bronze-layer-capstone','sil
 staging buckets in the ETL pipeline
 Here is the descriptin of each .py file
 
---> incremental_data_load.py loads the incremental data which got stored in bronze-layer-capstone bucket  since the last run of the ETL pipeline 
+--> incremental_data_load.py loads the incremental data which got stored in bronze-layer-capstone bucket  since the last run of the ETL pipeline (which is maintained in last_run folder of each table folder in bronze-layer-capstone to the pyspark Dataframe.
 -->
 
 
-# upload the (.py) or (.ipynb) files to clean the following files as mentioned ...
+# upload the (.py) files to clean the following files as mentioned ...
 
 credits.json,Accounts.csv and Loans.csv -->  Manish and Narendra
 
