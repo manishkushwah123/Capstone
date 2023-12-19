@@ -13,17 +13,7 @@
 # ---
 
 # +
-from pyspark.sql import SparkSession
-# Read data from a CSV file
-input_path = 'gs://capstone-g4/branches.csv'
-branches_df = spark.read.csv(input_path, header=True, inferSchema=True)
-
-# Show the first few rows of the DataFrame
-branches_df.show()
-
-# -
-
-branches_df.printSchema()
+branches_df=dfs["branches"]
 
 branches_df = branches_df.na.drop(subset = 'BranchId')
 
@@ -41,7 +31,7 @@ cleaned_branches_data2 = cleaned_branches_data1.withColumn('Bank_city', initcap(
 cleaned_branches_data2.show()
 
 # Specify the desired file name and path desired
-file_name = "gs://capstone-g4/cleaned_data/cleaned_branches_data.csv"
+file_name = "gs://silver-layer-capstone/branches/"
 # Write the cleaned DataFrame to a CSV file with the desired file name
 cleaned_branches_data2.write.csv(file_name, header=True, mode="append")
 
