@@ -16,15 +16,8 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
-# Read data from a CSV file
-input_path = 'gs://capstone-g4/customers.csv'
-customers_df = spark.read.csv(input_path, header=True, inferSchema=True)
-
-# Show the first few rows of the DataFrame
-customers_df.show()
-# -
-
-customers_df.printSchema()
+# Read data from a dfs dictionary
+customers_df=dfs["customers"]
 
 cleaned_data = customers_df.withColumn('dob', to_date('dob', 'M/d/yyyy'))
 
@@ -62,7 +55,7 @@ cleaned_customer_data2.show()
 
 # +
 # Specify the desired file name and path
-desired_file_name = "gs://capstone-g4/cleaned_data/customers.csv"
+desired_file_name = "gs://silver-layer-capstone/customers/"
 
 # Write the cleaned DataFrame to a CSV file with the desired file name
 cleaned_customer_data2.write.csv(desired_file_name, header=True, mode="append")
