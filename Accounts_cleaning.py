@@ -16,22 +16,9 @@ from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
 
-# +
-# Specify the path to your CSV file
-csv_file_path = "gs://capstondata/accounts.csv"
-
-# Read the CSV file into a DataFrame with inferred schema
-df = spark.read.csv(csv_file_path, header=True, inferSchema=True)
-
-# Show the contents of the DataFrame
-df.show()
-
-# +
-# Specify the path to your CSV file
-csv_file_path = "gs://capstondata/customers.csv"
-
-# Read the CSV file into a DataFrame with inferred schema
-customers = spark.read.csv(csv_file_path, header=True, inferSchema=True)
+# incremental_data_load.py loads data to dfs dictionary
+# fetching directly from that dfs
+customers=dfs["customers"]
 
 # Show the contents of the DataFrame
 customers.show()
@@ -91,7 +78,7 @@ df.printSchema()
 
 # +
 # Specify the desired file name and path
-desired_file_name = "gs://capstondata/silver_layer/Accounts.csv"
+desired_file_name = "gs://silver-layer-capstone/accounts/"
 
 # Write the cleaned DataFrame to a CSV file with the desired file name
 df.write.csv(desired_file_name, header=True, mode="append")
