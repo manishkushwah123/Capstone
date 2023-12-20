@@ -80,37 +80,37 @@ schema = StructType([
 
 customers_df = load_df_for_table_from_bucket("bronze-layer-capstone","customers","csv",schema)
 
-
-cleaned_data = customers_df.withColumn('dob',date_format(to_date(col("dob"),"M/d/yyyy"),"MM/dd/yyyy"))
-
-
-# Handle missing values
-cleaned_customer_data = cleaned_data.fillna({'Full_Name': 'Unknown', 'Customer_Email': 'Unknown','Customer_Phone': 0})
-
-# Handle duplicates
-cleaned_customer_data = cleaned_data.dropDuplicates(["Customer_id"])
-
-# Replace invalid phone numbers with null values
-cleaned_customer_data = cleaned_data.withColumn('Customer_Phone', when(length(col('Customer_Phone')) == 10, col('Customer_Phone')).otherwise(None))
-
-
-cleaned_customer_data1 = cleaned_customer_data.withColumn('Full_Name', initcap('Full_Name'))
-
-cleaned_customer_data2 = cleaned_customer_data1.withColumn("email_check", regexp_extract(col("Customer_Email"), r'^\S+@\S+\.\S+', 0))
-
-
-cleaned_customer_data2 = cleaned_customer_data2.withColumn("Customer_Email", when(col("email_check") != "", col("Customer_Email")).otherwise(None))
-
-# Drop the temporary 'email_check' column
-cleaned_customer_data2 = cleaned_customer_data1.drop("email_check")
-
-# Display the DataFrame with null values for invalid email addresses
-cleaned_customer_data2.show()
-
-# +
-# Specify the desired file name and path
-desired_file_name = "gs://silver-layer-capstone/customers/"
-
-# Write the cleaned DataFrame to a CSV file with the desired file name
-cleaned_customer_data2.write.csv(desired_file_name, header=True, mode="append")
-# -
+if customers_df is not None:
+        cleaned_data = customers_df.withColumn('dob',date_format(to_date(col("dob"),"M/d/yyyy"),"MM/dd/yyyy"))
+        
+        
+        # Handle missing values
+        cleaned_customer_data = cleaned_data.fillna({'Full_Name': 'Unknown', 'Customer_Email': 'Unknown','Customer_Phone': 0})
+        
+        # Handle duplicates
+        cleaned_customer_data = cleaned_data.dropDuplicates(["Customer_id"])
+        
+        # Replace invalid phone numbers with null values
+        cleaned_customer_data = cleaned_data.withColumn('Customer_Phone', when(length(col('Customer_Phone')) == 10, col('Customer_Phone')).otherwise(None))
+        
+        
+        cleaned_customer_data1 = cleaned_customer_data.withColumn('Full_Name', initcap('Full_Name'))
+        
+        cleaned_customer_data2 = cleaned_customer_data1.withColumn("email_check", regexp_extract(col("Customer_Email"), r'^\S+@\S+\.\S+', 0))
+        
+        
+        cleaned_customer_data2 = cleaned_customer_data2.withColumn("Customer_Email", when(col("email_check") != "", col("Customer_Email")).otherwise(None))
+        
+        # Drop the temporary 'email_check' column
+        cleaned_customer_data2 = cleaned_customer_data1.drop("email_check")
+        
+        # Display the DataFrame with null values for invalid email addresses
+        cleaned_customer_data2.show()
+        
+        # +
+        # Specify the desired file name and path
+        desired_file_name = "gs://silver-layer-capstone/customers/"
+        
+        # Write the cleaned DataFrame to a CSV file with the desired file name
+        cleaned_customer_data2.write.csv(desired_file_name, header=True, mode="append")
+        # -
