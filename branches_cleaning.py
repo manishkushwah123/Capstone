@@ -86,7 +86,7 @@ df_transformed = df_transformed.withColumn("Bank_city", upper(trim(col("Bank_cit
 df_transformed.show()
 
 # +
-desired_file_name = "gs://silver-layer-capstone/transactions/"
+desired_file_name = "gs://silver-layer-capstone/branches/"
  
 # Write the cleaned DataFrame to a CSV file with the desired file name
 df_transformed.write.csv(desired_file_name, header=True, mode="append")
