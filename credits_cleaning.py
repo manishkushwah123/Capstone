@@ -88,47 +88,47 @@ schema=StructType([
 
 credits_csv = load_df_for_table_from_bucket("bronze-layer-capstone","credits","json",schema)
 
-
-credits_csv=credits_csv.select(
-    "Customer_id",
-    "Credit Score",
-    "Annual Income",
-    "Years of Credit History",
-    "Months since last delinquent",
-    "Number of Open Accounts",
-    "Number of Credit Problems",
-    "Current Credit Balance",
-    "Maximum Open Credit",
-    "Bankruptcies",
-    "Tax Liens"
-)
-
-
-
-## droping the duplicated rows
-credits_csv=credits_csv.dropDuplicates()
-# dropping the null valued rows based on customer_id
-credits_csv=credits_csv.na.drop(subset="Customer_id")
-
-# +
-#replace nulls in credit Score with -1
-credits_csv=credits_csv.na.fill(-1,subset="Credit Score")
-
-#replace nulls with avg Anuual Income in Annual Income column
-avg_income=credits_csv.select(mean("Annual Income")).collect()[0][0]
-credits_csv=credits_csv.na.fill(avg_income,subset="Annual Income")
-
-#replace nulls in "|Years of Credit History|Months since last delinquent|Number of Open Accounts|Number of Credit Problems|Current Credit Balance|Maximum Open Credit|Bankruptcies|Tax Liens" with zero"
-credits_csv=credits_csv.na.fill(0,subset=["Years of Credit History",
-                                          "Months since last delinquent",
-                                          "Number of Open Accounts",
-                                          "Number of Credit Problems",
-                                          "Current Credit Balance",
-                                          "Maximum Open Credit",
-                                          "Bankruptcies",
-                                          "Tax Liens"])
-
-
-credits_csv.show()
-desired_file_path="gs://silver-layer-capstone/credits/"
-credits_csv.write.csv(desired_file_path,header=True,mode="append")
+if credits_csv is not None:        
+        credits_csv=credits_csv.select(
+            "Customer_id",
+            "Credit Score",
+            "Annual Income",
+            "Years of Credit History",
+            "Months since last delinquent",
+            "Number of Open Accounts",
+            "Number of Credit Problems",
+            "Current Credit Balance",
+            "Maximum Open Credit",
+            "Bankruptcies",
+            "Tax Liens"
+        )
+        
+        
+        
+        ## droping the duplicated rows
+        credits_csv=credits_csv.dropDuplicates()
+        # dropping the null valued rows based on customer_id
+        credits_csv=credits_csv.na.drop(subset="Customer_id")
+        
+        # +
+        #replace nulls in credit Score with -1
+        credits_csv=credits_csv.na.fill(-1,subset="Credit Score")
+        
+        #replace nulls with avg Anuual Income in Annual Income column
+        avg_income=credits_csv.select(mean("Annual Income")).collect()[0][0]
+        credits_csv=credits_csv.na.fill(avg_income,subset="Annual Income")
+        
+        #replace nulls in "|Years of Credit History|Months since last delinquent|Number of Open Accounts|Number of Credit Problems|Current Credit Balance|Maximum Open Credit|Bankruptcies|Tax Liens" with zero"
+        credits_csv=credits_csv.na.fill(0,subset=["Years of Credit History",
+                                                  "Months since last delinquent",
+                                                  "Number of Open Accounts",
+                                                  "Number of Credit Problems",
+                                                  "Current Credit Balance",
+                                                  "Maximum Open Credit",
+                                                  "Bankruptcies",
+                                                  "Tax Liens"])
+        
+        
+        credits_csv.show()
+        desired_file_path="gs://silver-layer-capstone/credits/"
+        credits_csv.write.csv(desired_file_path,header=True,mode="append")
