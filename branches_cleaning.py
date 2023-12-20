@@ -79,17 +79,18 @@ schema = StructType([
 
 
 df= load_df_for_table_from_bucket("bronze-layer-capstone","branches","csv",schema)
-df_filtered = df.na.drop(subset=["BranchId","Branch_Registration","Bank_Name","Bank_city"])
-
-from pyspark.sql.functions import *
-df_transformed = df.withColumn("Bank_Name", upper(trim(col("Bank_Name"))))
-df_transformed = df_transformed.withColumn("Bank_city", upper(trim(col("Bank_city"))))
-
-df_transformed.show()
-
-# +
-desired_file_name = "gs://silver-layer-capstone/branches/"
- 
-# Write the cleaned DataFrame to a CSV file with the desired file name
-df_transformed.write.csv(desired_file_name, header=True, mode="append")
+if  df is not None:
+        df_filtered = df.na.drop(subset=["BranchId","Branch_Registration","Bank_Name","Bank_city"])
+        
+        from pyspark.sql.functions import *
+        df_transformed = df.withColumn("Bank_Name", upper(trim(col("Bank_Name"))))
+        df_transformed = df_transformed.withColumn("Bank_city", upper(trim(col("Bank_city"))))
+        
+        df_transformed.show()
+        
+        # +
+        desired_file_name = "gs://silver-layer-capstone/branches/"
+         
+        # Write the cleaned DataFrame to a CSV file with the desired file name
+        df_transformed.write.csv(desired_file_name, header=True, mode="append")
 
