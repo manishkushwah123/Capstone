@@ -81,22 +81,22 @@ schema = StructType([
 
 df = load_df_for_table_from_bucket("bronze-layer-capstone","transactions","csv",schema)
 
-
-#Checking if there are any null values in the dataframe
-
-null_counts = [df.where(col(c).isNull()).count() for c in df.columns]
-null_counts
-
-# Dropping the columns where there are null values in the following columns
-df_filtered = df.na.drop(subset=["transaction_id","Amount","AccountId"])
-
-# replacing  the null values with unknown
-df_filled = df.fillna("unknown", subset=["TransactionOperation", "transaction_type"])
-
-#converting the string to upper and removing any spaces 
-
-df_transformed = df.withColumn("transaction_type", upper(trim(col("transaction_type"))))
-df_transformed = df_transformed.withColumn("TransactionOperation", upper(trim(col("TransactionOperation"))))
-
-desired_file_path="gs://silver-layer-capstone/transactions/"
-df_transformed.write.csv(desired_file_path,header=True,mode="append")
+if df is not None:        
+        #Checking if there are any null values in the dataframe
+        
+        null_counts = [df.where(col(c).isNull()).count() for c in df.columns]
+        null_counts
+        
+        # Dropping the columns where there are null values in the following columns
+        df_filtered = df.na.drop(subset=["transaction_id","Amount","AccountId"])
+        
+        # replacing  the null values with unknown
+        df_filled = df.fillna("unknown", subset=["TransactionOperation", "transaction_type"])
+        
+        #converting the string to upper and removing any spaces 
+        
+        df_transformed = df.withColumn("transaction_type", upper(trim(col("transaction_type"))))
+        df_transformed = df_transformed.withColumn("TransactionOperation", upper(trim(col("TransactionOperation"))))
+        
+        desired_file_path="gs://silver-layer-capstone/transactions/"
+        df_transformed.write.csv(desired_file_path,header=True,mode="append")
