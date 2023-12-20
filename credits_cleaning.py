@@ -127,5 +127,5 @@ credits_csv=credits_csv.na.fill(0,subset=["Years of Credit History",
 
 
 
-desired_file_path="gs://silver_layer-capstone/credits/"
+desired_file_path="gs://silver-layer-capstone/credits/"
 credits_csv.write.csv(desired_file_path,header=True,mode="append")
