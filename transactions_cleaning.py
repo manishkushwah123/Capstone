@@ -115,7 +115,7 @@ df_filled = df.fillna("unknown", subset=["TransactionOperation", "transaction_ty
 df_transformed = df.withColumn("transaction_type", upper(trim(col("transaction_type"))))
 df_transformed = df_transformed.withColumn("TransactionOperation", upper(trim(col("TransactionOperation"))))
 
-desired_file_path="gs://silver_layer-capstone/transactions/"
+desired_file_path="gs://silver-layer-capstone/transactions/"
 df_transformed.write.csv(desired_file_path,header=True,mode="append")
 
 
