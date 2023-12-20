@@ -62,24 +62,14 @@ def load_df_for_table_from_bucket(bucket_name,table_name,ext):
             dataframes.append(read_to_dataframe(file))
         return combine_dataframes_to_single_df(dataframes)
 
-customers=load_df_for_table_from_bucket("bronze-layer-capstone","customers","csv")
+df=load_df_for_table_from_bucket("bronze-layer-capstone","accounts","csv")
 
-# Show the contents of the DataFrame
-customers.show()
-# -
-
-df.printSchema()
 
 #REMOVE DUPLICATES
 df=df.dropDuplicates()
 
 #dropping entire row if null
 df= df.na.drop(subset='AccountId')
-
-df= df.join(customers, col("CustomerID") == col("Customer_id"), how="left")\
-       .select('AccountId', 'Customer_id','AccountType', 'Balance', 'last_kyc_updated', 'branch_id', 'account_created')
-
-df.show()
 
 # +
 # Calculate the mode of the "AccountType" column
@@ -91,21 +81,6 @@ df = df.na.fill(mode_value, subset=["AccountType"])
 
 df= df.na.fill(0, subset=["Balance"])
 
-# +
-# Specify the path to your CSV file
-csv_file_path = "gs://capstondata/branches.csv"
-
-# Read the CSV file into a DataFrame with inferred schema
-branches = spark.read.csv(csv_file_path, header=True, inferSchema=True)
-
-# Show the contents of the DataFrame
-branches.show()
-# -
-
-df= df.join(branches, col("BranchId") == col("branch_id"), how="left")\
-       .select('AccountId', 'Customer_id','AccountType', 'Balance', 'last_kyc_updated', 'branch_id', 'account_created')
-
-df.show()
 
 df = df.withColumn("Balance",round( df["Balance"].cast(DecimalType(10,2)),2))
 
