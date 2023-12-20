@@ -14,9 +14,27 @@
 
 # +
 import pyspark
+from pyspark.sql.window import *
+from pyspark.sql.functions import *
+from pyspark.sql.types import *
+from google.cloud import storage
+from datetime import datetime
 
+schema=StructType([
+    StructField("Customer_id", StringType(), True),
+    StructField("Credit Score", DoubleType(), True),
+    StructField("Annual Income", DoubleType(), True),
+    StructField("Years of Credit History", DoubleType(), True),
+    StructField("Number of Open Accounts", DoubleType(), True),
+    StructField("Number of Credit Problems", DoubleType(), True),
+    StructField("Current Credit Balance", DoubleType(), True),
+    StructField("Maximum Open Credit", DoubleType(), True),
+    StructField("Bankruptcies", DoubleType(), True),
+    StructField("Tax Liens", DoubleType(), True),
+    StructField("Months since last delinquent", DoubleType(), True)  # Add "Months since last delinquent" field
+])
 
-def load_df_for_table_from_bucket(bucket_name,table_name,ext):
+def load_df_for_table_from_bucket(bucket_name,table_name,ext,schema):
         def fetch_last_run_and_update_last_run(bucket_name,table_name):
             last_run=spark.read.format("csv").option("recursiveFileLookup", "true") \
                                              .option("header", "true") \
@@ -43,7 +61,7 @@ def load_df_for_table_from_bucket(bucket_name,table_name,ext):
         def read_to_dataframe(filepath,ext):
             df = spark.read.format(ext) \
             .option("header", "true") \
-            .option("inferSchema", "true") \
+            .schema(schema)\
             .load(file_path)
             return df
         def combine_dataframes_to_single_df(dataframes):
@@ -62,10 +80,7 @@ def load_df_for_table_from_bucket(bucket_name,table_name,ext):
 
 
 
-# -
-
-customers_file_path = "gs://inputbucket01/customers.csv"  # Replace with your CSV file path
-customers_csv = spark.read.option("header", "true").csv(customers_file_path)
+credits_csv = load_df_for_table_from_bucket("bronze-layer-capstone","credits","json",schema)
 
 
 credits_csv=credits_csv.select(
@@ -111,10 +126,6 @@ credits_csv=credits_csv.na.fill(0,subset=["Years of Credit History",
                                           "Tax Liens"])
 
 
-
-# -
-
-credits_csv.show(2,truncate=False)
 
 desired_file_path="gs://silver_layer-capstone/credits/"
 credits_csv.write.csv(desired_file_path,header=True,mode="append")
