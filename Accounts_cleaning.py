@@ -15,6 +15,7 @@
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import *
 from pyspark.sql.types import *
+spark = SparkSession.builder.appName("abc").getOrCreate()
 
 # incremental_data_load.py loads data to dfs dictionary
 # fetching directly from that dfs
