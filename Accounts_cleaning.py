@@ -8,6 +8,8 @@ from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from google.cloud import storage
 from datetime import datetime
+# Create a Spark session
+spark = SparkSession.builder.appName("AvroExample").getOrCreate()
 
 def load_df_for_table_from_bucket(bucket_name,table_name,ext,schema):
         timestamp=datetime.utcnow()
