@@ -82,7 +82,7 @@ schema = StructType([
     StructField("account_created", StringType(), True)
 ])
 
-df=load_df_for_table_from_bucket("inputbucket01","accounts","csv",schema)
+df=load_df_for_table_from_bucket("bronze-layer-capstone","accounts","csv",schema)
 
 if df is not None:
     #REMOVE DUPLICATES
