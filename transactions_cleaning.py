@@ -8,7 +8,7 @@ from pyspark.sql.functions import *
 from pyspark.sql.types import *
 from google.cloud import storage
 from datetime import datetime
-
+spark=SparkSession.builder.appName("capstone").getOrCreate()
 def load_df_for_table_from_bucket(bucket_name,table_name,ext,schema):
         timestamp=datetime.utcnow()
         
