@@ -73,14 +73,14 @@ def load_df_for_table_from_bucket(bucket_name,table_name,ext,schema):
 schema = StructType([
     StructField("Loan_id", StringType(), True),
     StructField("Customer_id", StringType(), True),
-    StructField("Current Loan Amount", IntegerType(), True),
+    StructField("Current Loan Amount", StringType(), True),
     StructField("Term", StringType(), True),
     StructField("Annual Income", DoubleType(), True),
     StructField("Years in current job", StringType(), True),
     StructField("Home Ownership", StringType(), True),
     StructField("Purpose", StringType(), True),
-    StructField("Monthly Debt", IntegerType(), True),
-    StructField("loan_sanctioned_date", DateType(), True)
+    StructField("Monthly Debt", DoubleType(), True),
+    StructField("loan_sanctioned_date", StringType(), True)
 ])
 
 df=load_df_for_table_from_bucket("bronze-layer-capstone","loans","csv",schema)
